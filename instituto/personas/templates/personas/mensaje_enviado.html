@@ -1,0 +1,15 @@
+{% extends 'personas/base.html' %}
+{% block title %}Mensaje Enviado{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>¡Mensaje Enviado!</h2>
+    <p>Gracias, {{ nombre }}. Hemos recibido tu mensaje:</p>
+    <blockquote class="blockquote">
+        <p>{{ mensaje }}</p>
+        <footer class="blockquote-footer">Enviado desde: {{ correo }}</footer>
+    </blockquote>
+    <p> Tu mensaje ha sido enviado a: <strong>soporte@cecosf-atacama.cl</strong>.</p>
+    <a href="{% url 'index' %}" class="btn btn-primary mt-3">Volver al Inicio</a>
+</div>
+{% endblock %}

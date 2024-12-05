@@ -19,4 +19,5 @@ urlpatterns=[
     path('ruta_protegida/', views.vista_protegida, name='vista_protegida'),
     path('gestionar_horas', views.gestionar_horas, name='gestionar_horas'),
     path('gestionar_horas/<int:hora_id>/accion/', views.gestionar_horas_accion, name='gestionar_horas_accion'),
+    path('dejar_reseña', views.dejar_reseña, name='dejar_reseña'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

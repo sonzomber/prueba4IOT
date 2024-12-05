@@ -8,7 +8,7 @@ class Medico(models.Model):
     especialidad = models.CharField(max_length=100)
     telefono = models.CharField(max_length=15)
     foto = models.ImageField(upload_to='medicos_fotos/', null=True, blank=True)
-    contraseña = models.CharField(max_length=128, null=True, blank=True)  # Nuevo campo
+    contraseña = models.CharField(max_length=128, null=True, blank=True) 
 
     def __str__(self):
         return f"{self.nombre} ({self.especialidad})"

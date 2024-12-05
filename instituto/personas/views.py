@@ -50,11 +50,11 @@ def ver_citas_paciente(request):
 def ver_horas_pacientes_medico(request):
     # Verificar si el usuario pertenece al grupo "Médicos"
     if request.user.groups.filter(name="Médicos").exists():
-        # Filtrar las horas asociadas al médico actual
+        # Filtra  las horas asociadas al médico actual
         horas = Hora.objects.filter(medico__nombre=request.user.username).order_by('fecha', 'hora')
         return render(request, 'medicos/ver_horas_pacientes.html', {'horas': horas})
     else:
-        # Si no pertenece al grupo "Médicos", mostrar un mensaje de error
+        # Si no pertenece al grupo Médicos, mostrar un mensaje de error
         return render(request, 'error.html', {'mensaje': 'No tienes permisos para acceder a esta página.'})
     
 
@@ -86,12 +86,6 @@ def logout_usuario(request):
 def vista_protegida(request):
     if 'usuario_id' not in request.session:
         return redirect('login')  # Redirige si no está autenticado
-    # Continúa con la lógica de la vista
-
-
-
-
-
 
 
 def gestionar_horas(request):
@@ -112,7 +106,7 @@ def gestionar_horas_accion(request, hora_id):
         accion = request.POST.get('accion')
         if accion == 'realizada':
             hora.disponible = False  # Marcamos como no disponible (realizada)
-            hora.usuario = None  # Limpia el usuario si lo prefieres
+            hora.usuario = None  # Limpia el usuario 
         elif accion == 'cancelar':
             hora.disponible = True  # La hora vuelve a estar disponible
             hora.usuario = None
@@ -120,3 +114,20 @@ def gestionar_horas_accion(request, hora_id):
         return redirect('gestionar_horas')
 
     return redirect('gestionar_horas')
+
+
+def dejar_reseña(request):
+    if request.method == 'POST':
+        # Simular el envío del mensaje
+        nombre = request.POST.get('nombre_usuario')
+        correo = request.POST.get('correo')
+        mensaje = request.POST.get('mensaje')
+
+        # Mostrar una página de confirmación
+        return render(request, 'personas/mensaje_enviado.html', {
+            'nombre': nombre,
+            'correo': correo,
+            'mensaje': mensaje
+        })
+
+    return render(request, 'personas/dejar_reseña.html')

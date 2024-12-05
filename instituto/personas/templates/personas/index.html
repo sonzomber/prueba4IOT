@@ -6,13 +6,12 @@
     <!-- Banner -->
     <div class="jumbotron bg-primary text-white text-center p-5 rounded">
         <h1 class="display-4">¡Bienvenidos al Centro Médico CECOSF Atacama!</h1>
-        <p class="lead">Cuidamos de tu salud con un equipo de profesionales altamente calificados.</p>
+        <p class="lead">Cuidamos de tu salud con un equipo de profesionales.</p>
         <hr class="my-4 bg-light">
-        <p>Consulta a nuestros médicos y agenda una hora para cuidar de ti y los tuyos.</p>
+        <p>Consulta a nuestros médicos y agenda una hora para cuidar de ti.</p>
         <a href="{% url 'listamedicos' %}" class="btn btn-light btn-lg">Ver Médicos</a>
     </div>
 
-    <!-- Opcional: Información adicional -->
     <div class="mt-5">
         <h3 class="text-center">¿Por qué elegirnos?</h3>
         <div class="row mt-4">
@@ -32,6 +31,10 @@
                 <p>Tu bienestar es nuestra prioridad.</p>
             </div>
         </div>
+        <div class="row mt-5">
+            <div class="col text-center">
+                <a href="{% url 'dejar_reseña' %}" class="btn btn-secondary btn-lg">Dejar Reseña o Reclamo</a>
+            </div>
     </div>
 </div>
 {% endblock %}
