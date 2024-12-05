@@ -1,0 +1,26 @@
+{% extends 'personas/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+{% block title %}Mis Citas{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Mis Citas</h1>
+    <ul class="list-group">
+        {% for cita in citas %}
+        <li class="list-group-item">
+            <div>
+                <strong>Médico:</strong> {{ cita.medico.nombre }}<br>
+                <strong>Especialidad:</strong> {{ cita.medico.especialidad }}<br>
+                <strong>Fecha:</strong> {{ cita.fecha }}<br>
+                <strong>Hora:</strong> {{ cita.hora }}
+            </div>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No tienes citas reservadas.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'listamedicos' %}" class="btn btn-secondary mt-3">Reservar nueva cita</a>
+</div>
+{% endblock %}

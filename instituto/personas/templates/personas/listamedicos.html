@@ -1,0 +1,29 @@
+{% extends 'personas/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+{% block title %}Lista de Médicos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Lista de Médicos</h1>
+    <ul class="list-group">
+        {% for medico in medicos %}
+        <li class="list-group-item">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <img src="{{ medico.foto.url }}" alt="{{ medico.nombre }}" class="img-thumbnail" 
+                         onerror="this.onerror=null; this.src='{% static 'images/default_medico.jpg' %}'">
+                </div>
+                <div class="col-md-10">
+                    <h5>{{ medico.nombre }}</h5>
+                    <p>Especialidad: {{ medico.especialidad }}</p>
+                    <p>Teléfono: {{ medico.telefono }}</p>
+                    <a href="{% url 'ver_horas_medico' medico.id %}" class="btn btn-primary">Ver Horas Disponibles</a>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

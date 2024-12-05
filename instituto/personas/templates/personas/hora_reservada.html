@@ -1,0 +1,24 @@
+{% extends 'personas/base.html' %}
+{% load static %}
+
+
+<!DOCTYPE html>
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">¡Hora Reservada!</h4>
+        <p>Has reservado exitosamente la hora.</p>
+        <hr>
+        <p class="mb-0">
+            <strong>Médico:</strong> {{ hora.medico.nombre }}<br>
+            <strong>Especialidad:</strong> {{ hora.medico.especialidad }}<br>
+            <strong>Fecha:</strong> {{ hora.fecha }}<br>
+            <strong>Hora:</strong> {{ hora.hora }}
+        </p>
+    </div>
+    <a href="{% url 'listamedicos' %}" class="btn btn-primary">Volver a la Lista de Médicos</a>
+
+      
+{% endblock %}

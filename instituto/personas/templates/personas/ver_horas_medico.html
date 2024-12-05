@@ -1,0 +1,29 @@
+{% extends 'personas/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+{% block title %}Horas Disponibles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Horas Disponibles para {{ medico.nombre }}</h1>
+    <p><strong>Especialidad:</strong> {{ medico.especialidad }}</p>
+    <p><strong>Teléfono:</strong> {{ medico.telefono }}</p>
+    <ul class="list-group">
+        {% for hora in horas %}
+        <li class="list-group-item">
+            Fecha: {{ hora.fecha }} | Hora: {{ hora.hora }}
+            {% if hora.disponible %}
+                <a href="{% url 'reservar_hora' hora.id %}" class="btn btn-success btn-sm float-end">Reservar</a>
+            {% else %}
+                <span class="badge bg-danger float-end">Reservada</span>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li class="list-group-item">No hay horas disponibles.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'listamedicos' %}" class="btn btn-secondary mt-3">Volver</a>
+</div>
+
+{% endblock %}
