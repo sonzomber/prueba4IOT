@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Medico
 from django.contrib.auth.decorators import login_required
 from .models import Hora
-from django.contrib.auth import authenticate, login
 from .models import Usuario
 
 def index(request):
@@ -15,24 +14,29 @@ def listamedicos(request):
     return render(request, 'personas/listamedicos.html', {'medicos': medicos})
 
 def ver_horas_medico(request, medico_id):
+    # Obtener el médico correspondiente al ID
     medico = get_object_or_404(Medico, id=medico_id)
+
+    # Filtrar las horas disponibles para este médico
     horas = medico.horas.filter(disponible=True).order_by('fecha', 'hora')
+
     return render(request, 'personas/ver_horas_medico.html', {'medico': medico, 'horas': horas})
 
 
 
 
-@login_required
 def reservar_hora(request, hora_id):
+    # Obtener la hora específica
     hora = get_object_or_404(Hora, id=hora_id)
 
-    if hora.disponible:  # Verificar que la hora esté disponible
+    if hora.disponible:  # Verificar disponibilidad
+        # Marcar como reservada
         hora.disponible = False
-        hora.usuario = request.user
-        hora.save()  # Guardar la reserva en la base de datos
-        return render(request, 'medicos/hora_reservada.html', {'hora': hora})
-    else:
-        return render(request, 'error.html', {'mensaje': 'La hora ya está reservada.'})
+        hora.usuario = request.user  # Asigna el paciente actual
+        hora.save()
+
+        # Redirigir a una página de confirmación
+        return render(request, 'personas/hora_reservada.html', {'hora': hora})
     
 
 def ver_citas_paciente(request):
@@ -56,24 +60,21 @@ def ver_horas_pacientes_medico(request):
 
 
 
-def login_usuario(request):
+def login_medico(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
         try:
-            usuario = Usuario.objects.get(username=username, password=password)
-            # Guardar datos en la sesión
-            request.session['usuario_id'] = usuario.id
-            request.session['grupo'] = usuario.grupo
-            if usuario.grupo == 'Paciente':
-                return redirect('ver_citas_paciente')
-            elif usuario.grupo == 'Medico':
-                return redirect('ver_horas_medico')
-        except Usuario.DoesNotExist:
-            return render(request, 'login.html', {'error': 'Usuario o contraseña incorrectos'})
+            medico = Medico.objects.get(nombre=username)
+            if medico.check_password(password):  # Verificar contraseña
+                request.session['medico_id'] = medico.id
+                return redirect('gestionar_horas')
+            else:
+                return render(request, 'personas/login.html', {'error': 'Contraseña incorrecta'})
+        except Medico.DoesNotExist:
+            return render(request, 'personas/login.html', {'error': 'Médico no encontrado'})
     return render(request, 'personas/login.html')
-
 
 
 def logout_usuario(request):
@@ -88,19 +89,34 @@ def vista_protegida(request):
     # Continúa con la lógica de la vista
 
 
-def registro_usuario(request):
+
+
+
+
+
+def gestionar_horas(request):
+    medico_id = request.session.get('medico_id')  # Obtener ID del médico autenticado
+    if not medico_id:
+        return redirect('login_medico')
+
+    medico = get_object_or_404(Medico, id=medico_id)
+    horas = medico.horas.order_by('fecha', 'hora')  # Todas las horas asociadas al médico
+
+    return render(request, 'personas/gestionar_horas.html', {'medico': medico, 'horas': horas})
+
+
+def gestionar_horas_accion(request, hora_id):
+    hora = get_object_or_404(Hora, id=hora_id)
+
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        grupo = request.POST.get('grupo')
+        accion = request.POST.get('accion')
+        if accion == 'realizada':
+            hora.disponible = False  # Marcamos como no disponible (realizada)
+            hora.usuario = None  # Limpia el usuario si lo prefieres
+        elif accion == 'cancelar':
+            hora.disponible = True  # La hora vuelve a estar disponible
+            hora.usuario = None
+        hora.save()
+        return redirect('gestionar_horas')
 
-        # Verificar si el nombre de usuario ya existe
-        if Usuario.objects.filter(username=username).exists():
-            return render(request, 'registro.html', {'error': 'El usuario ya existe.'})
-        
-        # Crear un nuevo usuario
-        nuevo_usuario = Usuario.objects.create(username=username, password=password, grupo=grupo)
-        nuevo_usuario.save()
-        return redirect('login')  # Redirigir al formulario de inicio de sesión
-
-    return render(request, 'personas/registro.html')
+    return redirect('gestionar_horas')
